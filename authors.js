@@ -17,9 +17,10 @@ router.route('/')
             })
         })
     })
+
     .post((req, res, next) => {     
         pool((err, connection) => {
-            connection.query(`INSERT INTO authors (firstName, lastName) VALUES (? , ?)`, [req.body.firstName,req.body.lastName], (error, result, fields) => {
+            connection.query(`INSERT INTO authors (firstName, lastName) VALUES ( ?, ?)`, [req.body.firstName, req.body.lastName], (error, result, fields) => {
                 connection.release()
                 if (error) throw error
                 res.send("Added new author")
@@ -39,23 +40,26 @@ router.route('/:id')
             })
         })
     })
+
     .put((req, res, post) => {
         pool((err, connection) => {
 
             connection.query("UPDATE authors SET `firstName` = ?, `lastName` = ? WHERE id = " + connection.escape(req.params.id), 
-            [req.body.fistName, req.body.lastName], (error, result, fields) => {
+            [req.body.firstName, req.body.lastName], (error, result, fields) => {
                 connection.release()
                 if (error) throw error
                 res.send("Updated author with id: " + req.params.id + " with following values => Fistname: " + req.body.firstName + ", Lastname: " + req.body.lastName)
             })
         })
     })
+
     .delete((req, res, next) => {
         pool((err, connection) => {
             connection.query(`DELETE FROM authors WHERE id = ` + connection.escape(req.params.id), (error, result, fields) => {
                 connection.release()
                 if (error) throw error
                 res.send("Deleted author: " + req.params.id)
+                
             })
         })
     })

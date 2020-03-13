@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Mar 13, 2020 at 10:06 AM
+-- Generation Time: Mar 13, 2020 at 12:24 PM
 -- Server version: 5.7.24
 -- PHP Version: 7.2.14
 
@@ -26,10 +26,13 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_loaned` ()  NO SQL
-    COMMENT 'Set all booked to be housed in the library'
+CREATE DEFINER=`root`@`localhost` PROCEDURE `upper_case` ()  NO SQL
+    COMMENT 'Simple procedure'
 BEGIN
-	UPDATE books SET books.loaned = 0 WHERE 1;
+	UPDATE books 
+    SET books.name = CONCAT(UCASE(LEFT(books.name, 1)), 
+                            LCASE(SUBSTRING(books.name, 2))) 
+    WHERE 1;
 END$$
 
 DELIMITER ;
@@ -53,8 +56,8 @@ CREATE TABLE `authors` (
 INSERT INTO `authors` (`id`, `firstName`, `lastName`) VALUES
 (1, 'JRR', 'Tolkien'),
 (2, 'David', 'Eddings'),
-(5, 'Aron', 'Flam'),
-(6, 'Lars', 'Wilderäng');
+(6, 'Lars', 'Wilderäng'),
+(8, 'Aron', 'Flam');
 
 -- --------------------------------------------------------
 
@@ -73,17 +76,15 @@ CREATE TABLE `authors_books` (
 --
 
 INSERT INTO `authors_books` (`id`, `authorID`, `bookID`) VALUES
-(1, 5, 13),
-(6, 5, 14),
 (7, 2, 17),
 (8, 2, 18),
 (9, 1, 1),
 (10, 1, 21),
 (11, 1, 3),
 (12, 6, 6),
-(13, 6, 5),
-(14, 6, 4),
-(15, 2, 19);
+(15, 2, 19),
+(16, 8, 14),
+(17, 8, 13);
 
 -- --------------------------------------------------------
 
@@ -103,17 +104,17 @@ CREATE TABLE `books` (
 
 INSERT INTO `books` (`id`, `name`, `genre`) VALUES
 (1, 'The fellowship of the ring', 'Fanatsy'),
-(3, 'The Return of the King', 'Fantasy'),
+(3, 'The return of the king', 'Fantasy'),
 (4, 'Stjärnklart', 'Dystropi'),
 (5, 'Stjärnfall', 'Dystropi'),
 (6, 'Stjärndamm', 'Dystropi'),
 (13, 'Jag bombade', 'Dokumentär'),
 (14, 'Det här är en svensk tiger', 'Samhälle'),
-(17, 'The Belgariand', 'Fantasy'),
-(18, 'The Malloreon', 'Fantasy'),
-(19, 'The Elenium', 'Fantasy'),
+(17, 'The belgariand', 'Fantasy'),
+(18, 'The malloreon', 'Fantasy'),
+(19, 'The elenium', 'Fantasy'),
 (20, 'The several towers', 'Thriller'),
-(21, 'The Many Towers', 'Fantasy');
+(21, 'The many towers', 'Fantasy');
 
 -- --------------------------------------------------------
 
@@ -204,13 +205,13 @@ ALTER TABLE `borrowers_books`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `authors_books`
 --
 ALTER TABLE `authors_books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `books`
@@ -222,7 +223,7 @@ ALTER TABLE `books`
 -- AUTO_INCREMENT for table `borrowers`
 --
 ALTER TABLE `borrowers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `borrowers_books`
@@ -238,15 +239,15 @@ ALTER TABLE `borrowers_books`
 -- Constraints for table `authors_books`
 --
 ALTER TABLE `authors_books`
-  ADD CONSTRAINT `authors_ID` FOREIGN KEY (`authorID`) REFERENCES `authors` (`id`),
-  ADD CONSTRAINT `book_ID` FOREIGN KEY (`bookID`) REFERENCES `books` (`id`);
+  ADD CONSTRAINT `authors_ID` FOREIGN KEY (`authorID`) REFERENCES `authors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `book_ID` FOREIGN KEY (`bookID`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `borrowers_books`
 --
 ALTER TABLE `borrowers_books`
-  ADD CONSTRAINT `Borrower_ID` FOREIGN KEY (`borrowerID`) REFERENCES `borrowers` (`id`),
-  ADD CONSTRAINT `bookID` FOREIGN KEY (`bookID`) REFERENCES `books` (`id`);
+  ADD CONSTRAINT `Borrower_ID` FOREIGN KEY (`borrowerID`) REFERENCES `borrowers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `bookID` FOREIGN KEY (`bookID`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

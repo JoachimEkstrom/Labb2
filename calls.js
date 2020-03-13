@@ -13,10 +13,10 @@ const router = express.Router()
 router.route('/procedure')
 .get((req, res, next) => {     
     pool((err, connection) => {
-        connection.query(`CALL reset_loaned()`, (error, result, fields) => {
+        connection.query(`CALL upper_case()`, (error, result, fields) => {
             connection.release()
             if (error) throw error
-            res.send("Procedure called - Reset books.loaned")
+            res.send("Procedure called - Adding capital letter to books name")
         })
     })
 })

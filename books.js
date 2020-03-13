@@ -21,6 +21,7 @@ router.route('/')
             })
         })
     })
+
     .post((req, res, next) => {     
         pool((err, connection) => {
             console.log(req.body)
@@ -44,6 +45,7 @@ router.route('/:id')
             })
         })
     })
+
     .put((req, res, post) => {
         pool((err, connection) => {
 
@@ -55,6 +57,7 @@ router.route('/:id')
             })
         })
     })
+    
     .delete((req, res, next) => {
         pool((err, connection) => {
             connection.query(`DELETE FROM books WHERE id = ` + connection.escape(req.params.id), (error, result, fields) => {

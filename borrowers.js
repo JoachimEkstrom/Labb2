@@ -17,6 +17,7 @@ router.route('/')
             })
         })
     })
+
     .post((req, res, next) => {     
         pool((err, connection) => {
             connection.query(`INSERT INTO borrowers (firstName, lastName, age) VALUES (? , ?, ?)`, [req.body.firstName, req.body.lastName, req.body.age], (error, result, fields) => {
@@ -39,6 +40,7 @@ router.route('/:id')
             })
         })
     })
+
     .put((req, res, post) => {
         pool((err, connection) => {
 
@@ -50,6 +52,7 @@ router.route('/:id')
             })
         })
     })
+    
     .delete((req, res, next) => {
         pool((err, connection) => {
             connection.query(`DELETE FROM borrowers WHERE id = ` + connection.escape(req.params.id), (error, result, fields) => {
