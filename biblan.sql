@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Mar 09, 2020 at 10:32 AM
+-- Generation Time: Mar 13, 2020 at 10:06 AM
 -- Server version: 5.7.24
 -- PHP Version: 7.2.14
 
@@ -21,6 +21,18 @@ SET time_zone = "+00:00";
 --
 -- Database: `biblan`
 --
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_loaned` ()  NO SQL
+    COMMENT 'Set all booked to be housed in the library'
+BEGIN
+	UPDATE books SET books.loaned = 0 WHERE 1;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -56,6 +68,23 @@ CREATE TABLE `authors_books` (
   `bookID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
 
+--
+-- Dumping data for table `authors_books`
+--
+
+INSERT INTO `authors_books` (`id`, `authorID`, `bookID`) VALUES
+(1, 5, 13),
+(6, 5, 14),
+(7, 2, 17),
+(8, 2, 18),
+(9, 1, 1),
+(10, 1, 21),
+(11, 1, 3),
+(12, 6, 6),
+(13, 6, 5),
+(14, 6, 4),
+(15, 2, 19);
+
 -- --------------------------------------------------------
 
 --
@@ -65,26 +94,26 @@ CREATE TABLE `authors_books` (
 CREATE TABLE `books` (
   `id` int(11) NOT NULL,
   `name` varchar(30) COLLATE utf8mb4_swedish_ci NOT NULL,
-  `genre` varchar(30) COLLATE utf8mb4_swedish_ci NOT NULL,
-  `loaned` tinyint(1) NOT NULL
+  `genre` varchar(30) COLLATE utf8mb4_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
 
 --
 -- Dumping data for table `books`
 --
 
-INSERT INTO `books` (`id`, `name`, `genre`, `loaned`) VALUES
-(1, 'The fellowship of the ring', 'Fanatsy', 0),
-(2, 'The Two Towers', 'Fantasy', 0),
-(3, 'The Return of the King', 'Fantasy', 0),
-(4, 'Stjärnklart', 'Dystropi', 0),
-(5, 'Stjärnfall', 'Dystropi', 0),
-(6, 'Stjärndamm', 'Dystropi', 0),
-(13, 'Jag bombade', 'Dokumentär', 0),
-(14, 'Det här är en svensk tiger', 'Samhälle', 0),
-(17, 'The Belgariand', 'Fantasy', 0),
-(18, 'The Malloreon', 'Fantasy', 0),
-(19, 'The Elenium', 'Fantasy', 0);
+INSERT INTO `books` (`id`, `name`, `genre`) VALUES
+(1, 'The fellowship of the ring', 'Fanatsy'),
+(3, 'The Return of the King', 'Fantasy'),
+(4, 'Stjärnklart', 'Dystropi'),
+(5, 'Stjärnfall', 'Dystropi'),
+(6, 'Stjärndamm', 'Dystropi'),
+(13, 'Jag bombade', 'Dokumentär'),
+(14, 'Det här är en svensk tiger', 'Samhälle'),
+(17, 'The Belgariand', 'Fantasy'),
+(18, 'The Malloreon', 'Fantasy'),
+(19, 'The Elenium', 'Fantasy'),
+(20, 'The several towers', 'Thriller'),
+(21, 'The Many Towers', 'Fantasy');
 
 -- --------------------------------------------------------
 
@@ -121,6 +150,15 @@ CREATE TABLE `borrowers_books` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
 
 --
+-- Dumping data for table `borrowers_books`
+--
+
+INSERT INTO `borrowers_books` (`id`, `borrowerID`, `bookID`) VALUES
+(1, 2, 14),
+(2, 3, 17),
+(3, 1, 4);
+
+--
 -- Indexes for dumped tables
 --
 
@@ -134,7 +172,9 @@ ALTER TABLE `authors`
 -- Indexes for table `authors_books`
 --
 ALTER TABLE `authors_books`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `books_ID` (`bookID`) USING BTREE,
+  ADD KEY `authors_ID` (`authorID`);
 
 --
 -- Indexes for table `books`
@@ -152,7 +192,9 @@ ALTER TABLE `borrowers`
 -- Indexes for table `borrowers_books`
 --
 ALTER TABLE `borrowers_books`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `Borrower_ID` (`borrowerID`),
+  ADD KEY `bookID` (`bookID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -162,31 +204,49 @@ ALTER TABLE `borrowers_books`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `authors_books`
 --
 ALTER TABLE `authors_books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `borrowers`
 --
 ALTER TABLE `borrowers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `borrowers_books`
 --
 ALTER TABLE `borrowers_books`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `authors_books`
+--
+ALTER TABLE `authors_books`
+  ADD CONSTRAINT `authors_ID` FOREIGN KEY (`authorID`) REFERENCES `authors` (`id`),
+  ADD CONSTRAINT `book_ID` FOREIGN KEY (`bookID`) REFERENCES `books` (`id`);
+
+--
+-- Constraints for table `borrowers_books`
+--
+ALTER TABLE `borrowers_books`
+  ADD CONSTRAINT `Borrower_ID` FOREIGN KEY (`borrowerID`) REFERENCES `borrowers` (`id`),
+  ADD CONSTRAINT `bookID` FOREIGN KEY (`bookID`) REFERENCES `books` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

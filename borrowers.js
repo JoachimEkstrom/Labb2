@@ -39,7 +39,17 @@ router.route('/:id')
             })
         })
     })
-    .put((req, res, post) => {})
+    .put((req, res, post) => {
+        pool((err, connection) => {
+
+            connection.query("UPDATE borrowers SET `firstName` = ?, `lastName` = ?, `age` = ? WHERE id = " + connection.escape(req.params.id), 
+            [req.body.firstName, req.body.lastName, req.body.age], (error, result, fields) => {
+                connection.release()
+                if (error) throw error
+                res.send("Updated borrowed with id: " + req.params.id + " with following values => Firstname: " + req.body.firstName + ", Lastname: " + req.body.lastName + " age: " + req.body.age)
+            })
+        })
+    })
     .delete((req, res, next) => {
         pool((err, connection) => {
             connection.query(`DELETE FROM borrowers WHERE id = ` + connection.escape(req.params.id), (error, result, fields) => {

@@ -24,7 +24,7 @@ router.route('/')
     .post((req, res, next) => {     
         pool((err, connection) => {
             console.log(req.body)
-            connection.query(`INSERT INTO books (name, genre, loaned) VALUES ( ?, ?, 0)`, [req.body.name, req.body.genre], (error, result, fields) => {
+            connection.query(`INSERT INTO books (name, genre) VALUES ( ?, ?)`, [req.body.name, req.body.genre], (error, result, fields) => {
                 connection.release()
                 if (error) throw error
                 res.send("Added a new book")
@@ -46,11 +46,12 @@ router.route('/:id')
     })
     .put((req, res, post) => {
         pool((err, connection) => {
-            connection.query(`UPDATE books SET name = ?, genre = ?, loaned = ?, WHERE books.id = ` + connection.escape(req.params.id), 
-            [req.body.name, req.body.genre, req.body.loaned], (error, result, fields) => {
+
+            connection.query("UPDATE books SET `name` = ?, `genre` = ? WHERE id = " + connection.escape(req.params.id), 
+            [req.body.name, req.body.genre], (error, result, fields) => {
                 connection.release()
                 if (error) throw error
-                res.send("Updated book with id: " + req.params.id + " with following values => Name: " + req.body.name + ", genre: " + req.body.genre + " loaned?: " + req.body.loaned)
+                res.send("Updated book with id: " + req.params.id + " with following values => Name: " + req.body.name + ", genre: " + req.body.genre)
             })
         })
     })
