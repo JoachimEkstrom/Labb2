@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Mar 13, 2020 at 12:24 PM
+-- Generation Time: Mar 16, 2020 at 08:59 AM
 -- Server version: 5.7.24
 -- PHP Version: 7.2.14
 
@@ -223,7 +223,7 @@ ALTER TABLE `books`
 -- AUTO_INCREMENT for table `borrowers`
 --
 ALTER TABLE `borrowers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `borrowers_books`
